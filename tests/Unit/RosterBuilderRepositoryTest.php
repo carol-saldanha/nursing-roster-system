@@ -30,19 +30,45 @@ class RosterBuilderRepositoryTest extends TestCase
 
     public function testBuildRoster()
     {
+        // Arrange
         $nurses = new Collection([
             new Nurse(['name' => 'Test Nurse 1']),
-            new Nurse(['name' => 'Test Nurse 2'])
+            new Nurse(['name' => 'Test Nurse 2']),
+            new Nurse(['name' => 'Test Nurse 3']),
+            new Nurse(['name' => 'Test Nurse 4']),
+            new Nurse(['name' => 'Test Nurse 5'])
         ]);
 
         $startDate = '2024-01-01';
-        $endDate = '2024-01-02';
+        $endDate = '2024-01-06';
 
+        // Act
         $roster = RosterBuilderRepository::buildRoster($nurses, Carbon::parse($startDate), Carbon::parse($endDate));
 
+        // Check that each shift in the roster has exactly 5 nurses assigned
+        $shiftsWithNurses = $roster->filter(function ($shift) {
+            return $shift->nurses->count() === 5;
+        });
+
+        // Assert
         $this->assertInstanceOf(Collection::class, $roster);
+        $this->assertEquals($roster->count(), $shiftsWithNurses->count());
     }
 
+    public function testBuildRosterWithEmptyNursesCollection()
+    {
+        // Arrange
+        $nurses = new Collection();
+        $startDate = '2024-01-01';
+        $endDate = '2024-01-10';
+
+        // Act
+        $roster = RosterBuilderRepository::buildRoster($nurses, Carbon::parse($startDate), Carbon::parse($endDate));
+
+        // Assert
+        // Check that the roster is empty when no nurses are provided
+        $this->assertTrue($roster->isEmpty());
+    }
 
 }
 

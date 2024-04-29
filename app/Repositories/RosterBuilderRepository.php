@@ -39,6 +39,11 @@ class RosterBuilderRepository implements RosterBuilderInterface
         // Initialize the roster collection
         $roster = new Collection();
 
+        // Check if the nurses collection is empty
+        if ($nurses->isEmpty()) {
+            return $roster; // Return an empty roster if no nurses are available
+        }
+
         // Initialize an array to keep track of allocated nurses for each day
         $allocatedNurses = [];
 
