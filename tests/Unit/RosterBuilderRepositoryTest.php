@@ -5,6 +5,7 @@ use App\Models\Nurse;
 use App\Models\Shift;
 use App\Repositories\RosterBuilderRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -29,12 +30,19 @@ class RosterBuilderRepositoryTest extends TestCase
 
     public function testBuildRoster()
     {
-        // Arrange
-        $nurses = collect();
-        $startDate = Carbon::parse('2022-01-01');
-        $endDate = Carbon::parse('2022-01-31');
+        $nurses = new Collection([
+            new Nurse(['name' => 'Test Nurse 1']),
+            new Nurse(['name' => 'Test Nurse 2'])
+        ]);
 
-        // Act
-        $result = RosterBuilderRepository::buildRoster($nurses, $startDate, $endDate);
+        $startDate = '2024-01-01';
+        $endDate = '2024-01-02';
+
+        $roster = RosterBuilderRepository::buildRoster($nurses, Carbon::parse($startDate), Carbon::parse($endDate));
+
+        $this->assertInstanceOf(Collection::class, $roster);
     }
+
+
 }
+

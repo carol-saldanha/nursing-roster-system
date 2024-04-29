@@ -38,17 +38,17 @@ class RosterBuilderRepository implements RosterBuilderInterface
     {
         // Initialize the roster collection
         $roster = new Collection();
-    
+
         // Initialize an array to keep track of allocated nurses for each day
         $allocatedNurses = [];
-    
+
         // Iterate through each date from start date to end date
         $date = $startDate->copy(); // Clone the start date
-    
-        while ($date->lte($endDate)) { 
+
+        while ($date->lte($endDate)) {
             // Array for type of shifts
             $shiftTypes = [Shift::SHIFT_TYPE_MORNING, Shift::SHIFT_TYPE_EVENING, Shift::SHIFT_TYPE_NIGHT];
-    
+
             // Iterate through each shift type
             foreach ($shiftTypes as $type) {
                 // Create a new Shift object for each shift type
@@ -56,38 +56,40 @@ class RosterBuilderRepository implements RosterBuilderInterface
                 $shifts->date = $date->copy(); // Create a copy of the date for this shift
                 $shifts->type = $type;
                 $shifts->nurses = new Collection();
-    
-                // Assign 5 nurses to each shift
+
+                // Assign 5 nurses to each shift if enough nurses are available
                 $nursesCount = 0;
-                while ($nursesCount < 5) {
-                    // Randomly select a nurse
-                    $selectedNurse = $nurses->random();
-    
-                    // Check if the nurse has already been allocated for this date
-                    if (!isset($allocatedNurses[$date->format('Y-m-d')][$selectedNurse->name])) {
-                        // Add the selected nurse to the shift's nurses collection
-                        $shifts->nurses->push($selectedNurse);
-    
-                        // Mark the nurse as allocated for this date
-                        $allocatedNurses[$date->format('Y-m-d')][$selectedNurse->name] = true;
-    
-                        $nursesCount++;
-                    }
+                $availableNurses = $nurses->diff($allocatedNurses[$date->format('Y-m-d')] ?? []);
+                while ($nursesCount < 5 && $availableNurses->isNotEmpty()) {
+                    // Randomly select a nurse from available nurses
+                    $selectedNurse = $availableNurses->random();
+
+                    // Add the selected nurse to the shift's nurses collection
+                    $shifts->nurses->push($selectedNurse);
+
+                    // Mark the nurse as allocated for this date
+                    $allocatedNurses[$date->format('Y-m-d')][$selectedNurse->name] = true;
+
+                    $nursesCount++;
+
+                    // Update available nurses list
+                    $availableNurses = $nurses->diff($allocatedNurses[$date->format('Y-m-d')] ?? []);
                 }
-    
+
                 // Add the shift to the roster collection
-                $roster->push($shifts); 
+                $roster->push($shifts);
             }
-    
+
             // Move to the next day
             $date->addDay();
         }
-    
+
         // Save the updated allocated rosters to the output file outside the loop
         Storage::put("sample_data/roster.json", json_encode($roster));
-    
+
         return $roster;
-    }    
+    }
+  
 
       
 }
