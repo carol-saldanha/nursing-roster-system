@@ -80,5 +80,30 @@ class RosterBuilderRepositoryTest extends TestCase
         $this->assertTrue($roster->isEmpty());
     }
 
+    public function testBuildRosterCheckMinimumNurses()
+    {
+        // Arrange
+        $nurses = new Collection([
+            new Nurse(['name' => 'Test Nurse 1']),
+            new Nurse(['name' => 'Test Nurse 2']),
+            new Nurse(['name' => 'Test Nurse 3']),
+            new Nurse(['name' => 'Test Nurse 4']),
+            new Nurse(['name' => 'Test Nurse 5'])    
+        ]);
+        $startDate = '2024-01-01';
+        $endDate = '2024-01-10';
+
+        // Act
+        $roster = RosterBuilderRepository::buildRoster($nurses, Carbon::parse($startDate), Carbon::parse($endDate));
+
+        // Assert
+        // Check if nurses are less than 15, because one day has 15 nurses
+        // Assert that the count of nurses in the roster is less than 15
+        $this->assertLessThan(15, $roster->sum(function ($shift) {
+            return $shift->nurses->count();
+        }));
+        $this->assertTrue($roster->isEmpty());
+    }
+
 }
 
