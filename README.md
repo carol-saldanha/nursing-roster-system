@@ -55,3 +55,5 @@ You can run tests with `php artisan test`. Tests for the scaffold code have been
 
 `testBuildRosterWithEmptyNursesCollection` checks if the roster is empty if no nurses are provided (In case the file is empty.)
 
+`testBuildRosterCheckMinimumNurses` checks if there are less than 15 nurses, because one day requires a minimum of 15 nurses.
+
