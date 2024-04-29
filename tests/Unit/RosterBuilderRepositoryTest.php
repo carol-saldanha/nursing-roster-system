@@ -36,7 +36,17 @@ class RosterBuilderRepositoryTest extends TestCase
             new Nurse(['name' => 'Test Nurse 2']),
             new Nurse(['name' => 'Test Nurse 3']),
             new Nurse(['name' => 'Test Nurse 4']),
-            new Nurse(['name' => 'Test Nurse 5'])
+            new Nurse(['name' => 'Test Nurse 5']),
+            new Nurse(['name' => 'Test Nurse 6']),
+            new Nurse(['name' => 'Test Nurse 7']),
+            new Nurse(['name' => 'Test Nurse 8']),
+            new Nurse(['name' => 'Test Nurse 9']),
+            new Nurse(['name' => 'Test Nurse 10']),
+            new Nurse(['name' => 'Test Nurse 11']),
+            new Nurse(['name' => 'Test Nurse 12']),
+            new Nurse(['name' => 'Test Nurse 13']),
+            new Nurse(['name' => 'Test Nurse 14']),
+            new Nurse(['name' => 'Test Nurse 15'])      
         ]);
 
         $startDate = '2024-01-01';
